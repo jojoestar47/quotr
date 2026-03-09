@@ -2,11 +2,12 @@ import { useState } from 'react'
 import { useProducts } from '../hooks/useProducts'
 import { Btn, Input, Select, Field, Label, StockBadge, Toast, Spinner } from './ui'
 import { formatCurrency } from '../lib/format'
+import BulkUpload from './BulkUpload'
 
 const EMPTY = { name: '', code: '', category: '', size: '', material: '', price: '', stock_status: 'in' }
 
 export default function AdminProducts() {
-  const { products, categories, loading, createProduct, updateProduct, deleteProduct } = useProducts({ includeInactive: true })
+  const { products, categories, loading, createProduct, updateProduct, deleteProduct, reload } = useProducts({ includeInactive: true })
   const [form, setForm] = useState(null) // null = hidden, {} = new, {id,...} = editing
   const [saving, setSaving] = useState(false)
   const [toast, setToast] = useState({ show: false, message: '' })
@@ -48,7 +49,10 @@ export default function AdminProducts() {
           <h2 className="text-[18px] font-bold tracking-tight mb-1">Products &amp; Pricing</h2>
           <p className="text-[13px] text-[#64748b]">Manage your product catalogue</p>
         </div>
-        <Btn variant="primary" onClick={openNew}>+ Add Product</Btn>
+        <div className="flex gap-2">
+          <BulkUpload onComplete={() => { reload(); showToast("Bulk import complete") }} />
+          <Btn variant="primary" onClick={openNew}>+ Add Product</Btn>
+        </div>
       </div>
 
       {/* Form */}
